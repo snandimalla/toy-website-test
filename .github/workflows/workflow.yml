@@ -38,7 +38,7 @@ jobs: #checks out code and runs the linter, start of multiple jobs
         deploymentName: ${{ github.run_number }}
         resourceGroupName: ${{ env.AZURE_RESOURCEGROUP_NAME }}
         template: ./deploy/main.bicep
-        parameters: environmentType=${{ env.ENVIRONMENT_TYPE }}
+        parameters: environmentType=${{ env.ENVIRONMENT_TYPE }} location=eastus
         deploymentMode: Validate
   deploy:
     runs-on: ubuntu-latest
@@ -59,5 +59,4 @@ jobs: #checks out code and runs the linter, start of multiple jobs
         resourceGroupName: ${{ env.AZURE_RESOURCEGROUP_NAME }}
         template: ./deploy/main.bicep
         parameters: 
-          environmentType=${{ env.ENVIRONMENT_TYPE }}
-          location=eastus
+          environmentType=${{ env.ENVIRONMENT_TYPE }} location=eastus
