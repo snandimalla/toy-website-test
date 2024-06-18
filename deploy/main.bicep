@@ -1,5 +1,5 @@
 @description('The location into which your Azure resources should be deployed.')
-param location string = resourceGroup().location
+param location string = 'eastus'
 
 @description('Select the type of environment you want to provisiolsn. Allowed values are Production and Test.')
 @allowed([
