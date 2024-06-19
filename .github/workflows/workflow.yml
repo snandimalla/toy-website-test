@@ -84,19 +84,20 @@ jobs: #checks out code and runs the linter, start of multiple jobs
         resourceGroupName: ${{ env.AZURE_RESOURCEGROUP_NAME }}
         template: ./deploy/main.bicep
         parameters: 
-          environmentType=${{ env.ENVIRONMENT_TYPE }} location=eastus
+          environmentType: ${{ env.ENVIRONMENT_TYPE }}
+          location: eastus
 
-smoke-test: #defines steps to check out the code, run the smoke tests, and use the Pester action to run the tests
-  runs-on: ubuntu-latest
-  needs: deploy
-  steps:
-  - uses: actions/checkout@v3
-  - run: |
-      $container = New-PesterContainer `
-        -Path 'deploy/Website.Tests.ps1' `
-        -Data @{ HostName = '${{needs.deploy.outputs.appServiceAppHostName}}' }
-      Invoke-Pester `
-        -Container $container `
-        -CI
-    name: Run smoke tests
-    shell: pwsh
+   smoke-test:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        $container = New-PesterContainer `
+          -Path 'deploy/Website.Tests.ps1' `
+          -Data @{ HostName = '${{needs.deploy.outputs.appServiceAppHostName}}' }
+        Invoke-Pester `
+          -Container $container `
+          -CI
+      name: Run smoke tests
+      shell: pwsh 
