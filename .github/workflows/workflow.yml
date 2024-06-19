@@ -85,7 +85,7 @@ jobs: #checks out code and runs the linter, start of multiple jobs
         deploymentName: ${{ github.run_number }}
         resourceGroupName: ${{ env.AZURE_RESOURCEGROUP_NAME }}
         template: ./deploy/main.bicep
-        parameters: environmentType: ${{ env.ENVIRONMENT_TYPE }}
+        parameters: environmentType= ${{ env.ENVIRONMENT_TYPE }}
 
   smoke-test:
     runs-on: ubuntu-latest
