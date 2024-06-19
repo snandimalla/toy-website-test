@@ -19,7 +19,7 @@ jobs: #checks out code and runs the linter, start of multiple jobs
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Install Node.js
+    - name: Run Bicep linter
       run: az bicep build --file deploy/main.bicep
 
   validate: #defines steps to check out the code, sign in, and use the ARM deploy action to validate the deployment
@@ -40,6 +40,7 @@ jobs: #checks out code and runs the linter, start of multiple jobs
         template: ./deploy/main.bicep
         parameters: environmentType=${{ env.ENVIRONMENT_TYPE }} location=eastus
         deploymentMode: Validate
+
   preview: #defines steps to check out the code, sign in, and use the ARM deploy action to run a what-if deployment
     runs-on: ubuntu-latest
     needs: [lint,validate] #ensures that the lint and validate jobs run before the preview job
@@ -59,7 +60,7 @@ jobs: #checks out code and runs the linter, start of multiple jobs
         template: ./deploy/main.bicep
         parameters: >
           environmentType=${{ env.ENVIRONMENT_TYPE }} location=eastus
-          additionalArguments: --what-if
+        additionalArguments: --what-if
   deploy:
     runs-on: ubuntu-latest
     environment: Website 
