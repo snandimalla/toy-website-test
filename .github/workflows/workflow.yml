@@ -31,8 +31,7 @@ jobs: #checks out code and runs the linter, start of multiple jobs
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        # subscription-id:
-        subscription-id: "6ca76c90-aec6-46df-ab70-dd59b9ccef67"
+        subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
     - uses: azure/arm-deploy@v1
       name: Run preflight validation
       with:
@@ -46,13 +45,12 @@ jobs: #checks out code and runs the linter, start of multiple jobs
     needs: [lint,validate] #ensures that the lint and validate jobs run before the deploy job
     steps:
     - uses: actions/checkout@v3
-    - uses: azure/login@v1
+    - uses: azure/login@v1.4.6
       name: Sign in to Azure
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        # subscription-id:
-        subscription-id: "6ca76c90-aec6-46df-ab70-dd59b9ccef67"
+        subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
     - uses: azure/arm-deploy@v1
       name: Deploy website
       with:
