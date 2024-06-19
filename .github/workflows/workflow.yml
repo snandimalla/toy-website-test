@@ -54,7 +54,7 @@ jobs: #checks out code and runs the linter, start of multiple jobs
     - uses: azure/arm-deploy@v1
       name: Deploy website
       with:
-        failOnStdError: false #allows the workflow to continue even if the deployment fails
+        failOnStdErr: false #allows the workflow to continue even if the deployment fails
         deploymentName: ${{ github.run_number }}
         resourceGroupName: ${{ env.AZURE_RESOURCEGROUP_NAME }}
         template: ./deploy/main.bicep
