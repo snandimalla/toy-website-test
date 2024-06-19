@@ -50,7 +50,8 @@ jobs: #checks out code and runs the linter, start of multiple jobs
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        # subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        subscription-id: "6ca76c90-aec6-46df-ab70-dd59b9ccef67"
     - uses: azure/arm-deploy@v1
       name: Deploy website
       with:
