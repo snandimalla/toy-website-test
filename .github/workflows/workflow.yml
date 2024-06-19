@@ -61,10 +61,12 @@ jobs: #checks out code and runs the linter, start of multiple jobs
         parameters: >
           environmentType=${{ env.ENVIRONMENT_TYPE }} location=eastus
         additionalArguments: --what-if
-  deploy:
+  deploy: #defines steps to check out the code, sign in, and use the ARM deploy action to deploy the website
     runs-on: ubuntu-latest
     environment: Website 
     needs: preview #ensures that the preview job runs before the deploy job
+    outputs: 
+      appServiceAppHostName: ${{ steps.deploy.outputs.appServiceAppHostName }} #stores the app service hostname as an output
     steps:
     - uses: actions/checkout@v3
     - uses: azure/login@v1.4.6
@@ -74,6 +76,7 @@ jobs: #checks out code and runs the linter, start of multiple jobs
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
     - uses: azure/arm-deploy@v1
+      id: deploy #stores the output of the deployment as an output
       name: Deploy website
       with:
         failOnStdErr: false #allows the workflow to continue even if the deployment fails
@@ -82,3 +85,18 @@ jobs: #checks out code and runs the linter, start of multiple jobs
         template: ./deploy/main.bicep
         parameters: 
           environmentType=${{ env.ENVIRONMENT_TYPE }} location=eastus
+
+smoke-test: #defines steps to check out the code, run the smoke tests, and use the Pester action to run the tests
+  runs-on: ubuntu-latest
+  needs: deploy
+  steps:
+  - uses: actions/checkout@v3
+  - run: |
+      $container = New-PesterContainer `
+        -Path 'deploy/Website.Tests.ps1' `
+        -Data @{ HostName = '${{needs.deploy.outputs.appServiceAppHostName}}' }
+      Invoke-Pester `
+        -Container $container `
+        -CI
+    name: Run smoke tests
+    shell: pwsh
